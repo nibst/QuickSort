@@ -15,13 +15,18 @@ public class QuickSort {
     private static final Logger LOG = Logger.getLogger(QuickSort.class.getName());
     private static final String OUTPUT = "output.txt";
     private int partitioning;
-    private int partition;
+    private int partitioner;
+    private int time;
+    private int nRecursions;
     private Scanner scanner;
     private File outputFile;
+    public int nSwaps;
+
 
     public QuickSort(final String fileName, final int hoareOrLom, final int randOrMed) {
         partitioning = hoareOrLom;
-        partition = randOrMed;
+        partitioner = randOrMed;
+        nSwaps = 0;
         File inputFile = new File(fileName);
         File outputFile = new File(OUTPUT);
         try {
@@ -59,6 +64,7 @@ public class QuickSort {
         aux = array[i];
         array[i] = array[j];
         array[j] = aux;
+        nSwaps++;
     }
 
     private int medianIndex(int[] array, int i, int f) {
@@ -120,7 +126,7 @@ public class QuickSort {
 
 
     private int randomPartition(int[] array, int i, int f) {
-        int random = (int) (Math.random() * f);
+        int random = (int) (Math.random() * (f-i)) +i ;
         swap(i, random, array);
         if (partitioning == 1)
             return horaePartitioning(array, i, f);
@@ -134,13 +140,14 @@ public class QuickSort {
             for (int j = i; j <= f; j++)
                 System.out.print(array[j] + " ");
             System.out.println("");
-            if (partition == 1)
+            if (partitioner == 1)
                 p = randomPartition(array, i, f);
             else
                 p = medianPartition(array, i, f);
             quickSort(array, i, p - 1);
             quickSort(array, p + 1, f);
         }
+        //talvez tirar isso dps
         return array;
 
     }
@@ -165,8 +172,18 @@ public class QuickSort {
     }
 
     public int horaePartitioning(int[] array, int i, int f) {
-
-        return 1;
+        int particionador = array[i];
+        int m = i;
+        int n = f;
+        while(n>m) {
+            while (array[n] > particionador)
+                n--;
+            while (array[m] <= particionador && n>m)
+                m++;
+            swap(m, n, array);
+        }
+        //troca o primeiro elemento, que é o particionador, pelo ultimo elemento da esquerda
+        swap(i,n,array);
+        return n;
     }
-
 }
